@@ -160,6 +160,8 @@
     { nama: 'Beranda Imigrasi Brebes', ket: 'Layanan imigrasi di Kabupaten Brebes',
       maps: 'https://maps.app.goo.gl/5Aiyju7poaFPYc428' }
   ];
+  // Tanggal yang tampil dibatasi sekian hari ke depan
+  var HARI_KE_DEPAN = 30;
   var BULAN = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
   var HARI = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
   var semuaJadwal = null, lokasiDipilih = null, jadwalDipilih = null;
@@ -212,7 +214,11 @@
     el('stepTanggal').classList.remove('terkunci');
     var box = el('listTanggal');
     if (!semuaJadwal) { box.className = 'kosong'; box.textContent = 'Memuat jadwal...'; return; }
-    var list = semuaJadwal.filter(function (j) { return j.lokasi.toLowerCase() === lokasiDipilih.toLowerCase(); });
+    var batas = new Date(); batas.setHours(0, 0, 0, 0); batas.setDate(batas.getDate() + HARI_KE_DEPAN);
+    var list = semuaJadwal.filter(function (j) {
+      var p = j.tanggal.split('-').map(Number);
+      return j.lokasi.toLowerCase() === lokasiDipilih.toLowerCase() && new Date(p[0], p[1] - 1, p[2]) <= batas;
+    });
     if (!list.length) { box.className = 'kosong'; box.textContent = 'Belum ada jadwal di lokasi ini. Coba lokasi lain.'; return; }
     box.className = 'tanggal-grid'; box.innerHTML = '';
     list.forEach(function (j) {
