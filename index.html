@@ -31,8 +31,11 @@
   .lokasi { background: #fff; border: 2px solid var(--garis); border-radius: 12px; padding: 14px; cursor: pointer; text-align: left; font: inherit; color: inherit; }
   .lokasi b { display: block; font-size: 15px; color: var(--navy); line-height: 1.3; }
   .lokasi span { display: block; font-size: 12.5px; color: var(--redup); margin-top: 4px; }
-  .lokasi a { display: inline-block; margin-top: 10px; font-size: 13px; color: var(--navy-2); font-weight: 500; }
+  .lokasi a { display: block; margin-top: 10px; font-size: 13px; color: var(--navy-2); font-weight: 500; }
   .lokasi.aktif { border-color: var(--emas); background: var(--emas-muda); }
+  .lokasi .pilih { display: inline-block; margin-top: 12px; padding: 7px 14px; border-radius: 999px; background: var(--navy); color: #fff; font-size: 13px; font-weight: 600; }
+  .lokasi.aktif .pilih { background: var(--emas); color: var(--navy); }
+  .lokasi.aktif .pilih::before { content: "\2713  "; }
 
   .tanggal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
   .tgl { background: #fff; border: 2px solid var(--garis); border-radius: 12px; padding: 10px 8px; text-align: center; cursor: pointer; font: inherit; color: inherit; }
@@ -168,14 +171,16 @@
     LOKASI.forEach(function (l) {
       var b = document.createElement('div');
       b.className = 'lokasi'; b.tabIndex = 0; b.setAttribute('role', 'button');
-      b.innerHTML = '<b></b><span></span><a target="_blank" rel="noopener">Lihat di Google Maps</a>';
+      b.innerHTML = '<b></b><span></span><a target="_blank" rel="noopener">Lihat di Google Maps</a><div class="pilih">Pilih lokasi ini</div>';
       b.querySelector('b').textContent = l.nama;
       b.querySelector('span').textContent = l.ket;
       b.querySelector('a').href = l.maps;
       b.querySelector('a').addEventListener('click', function (e) { e.stopPropagation(); });
       var pilih = function () {
-        document.querySelectorAll('.lokasi').forEach(function (x) { x.classList.remove('aktif'); });
-        b.classList.add('aktif');
+        document.querySelectorAll('.lokasi').forEach(function (x) {
+          x.classList.remove('aktif'); x.querySelector('.pilih').textContent = 'Pilih lokasi ini';
+        });
+        b.classList.add('aktif'); b.querySelector('.pilih').textContent = 'Dipilih';
         lokasiDipilih = l.nama; jadwalDipilih = null;
         tampilTanggal(); perbarui();
       };
